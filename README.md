@@ -56,5 +56,8 @@ Definitions can be found in [`src/interface.rs`](src/interface.rs). The data is 
 }
 ```
 
+## Build
+Build with cargo: `cargo build`. More info: https://doc.rust-lang.org/cargo/commands/cargo-build.html
+
 ## Issues
 Create an issue on the [issues tab](https://github.com/starsflower/rmq-discord-transport/issues). Any support/feedback is appreciated.
