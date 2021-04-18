@@ -15,24 +15,24 @@ mod interface;
 use interface::*;
 
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
-struct NoURIError;
+struct NoUriError;
 
-impl error::Error for NoURIError {}
+impl error::Error for NoUriError {}
 
-impl fmt::Display for NoURIError {
+impl fmt::Display for NoUriError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "No webhook URI was given to the function, and no default URI is defined.")
     }
 }
 
-impl fmt::Debug for NoURIError {
+impl fmt::Debug for NoUriError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "No webhook URI was given to the function, and no default URI is defined. {{ file: {} line: {} }}", file!(), line!())
     }
 }
 
 
-fn handle(body: &String, default_uri: &Option<String>) -> Result<()> {
+fn handle(body: &str, default_uri: &Option<String>) -> Result<()> {
     let client = reqwest::Client::new();
     let message: IncomingTransportData = serde_json::from_str(body)?;
     
@@ -44,7 +44,7 @@ fn handle(body: &String, default_uri: &Option<String>) -> Result<()> {
                 Some(y) => y.to_owned(),
                 None => {
                     eprintln!("No URI provided or ");
-                    return Err(Box::new(NoURIError));
+                    return Err(Box::new(NoUriError));
                 }
             }
         }
@@ -56,7 +56,7 @@ fn handle(body: &String, default_uri: &Option<String>) -> Result<()> {
     });
     
 
-    let request = if files.len() == 0 {
+    let request = if files.is_empty() {
         client.post(&target_uri)
             .header("Content-Type", "application/json")
             .body(payload.to_string())
@@ -87,7 +87,7 @@ fn handle(body: &String, default_uri: &Option<String>) -> Result<()> {
     Ok(())
 }
 
-fn main() -> () {
+fn main() {
     dotenv().ok();
 
     let default_webhook = match env::var_os("DEFAULT_WEBHOOK_URI") {
